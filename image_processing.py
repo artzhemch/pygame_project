@@ -38,31 +38,45 @@ def generate_new_enemy_image(source: str,
         print(f'Файл с именем {fullname} уже существует. Перезапись не разрешена')
 
 
-def load_image(name: str) -> pygame.Surface:
-    """Загрузка изображения из файла. return pygame.Surface с данным изображением"""
+def load_image(name: str, color_key: tuple = -1) -> pygame.Surface:
+    """Загрузка изображения из файла. return pygame.Surface с данным изображением
+    color_key - если изображение было непрозрачным, задаём цвет фона"""
     fullname = os.path.join(IMAGES_DIRECTORY, name)
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
     image = pygame.image.load(fullname)
-    image = image.convert_alpha()
+    if color_key is not None:
+        image = image.convert()
+        if color_key == -1:
+            color_key = image.get_at((0, 0))
+        image.set_colorkey(color_key)
+    else:
+        image = image.convert_alpha()
     return image
 
 
 if __name__ == '__main__':
+    """"Создание 2 вражеских самолётов, тестирование правильной работы и отрисовки"""
     pygame.init()
     size = 300, 300
     screen = pygame.display.set_mode(size)
     screen.fill(pygame.Color('black'))
-    load_image('player_plane.png')
-    generate_new_enemy_image('player_plane.png', 'enemy2_plane.png', rewrite=True)
+    player = load_image('player_plane.png')
+    generate_new_enemy_image('player_plane.png', 'enemy_plane.png', rewrite=True)
     generate_new_enemy_image('player_plane.png',
-                             'enemy3_plane.png',
-                             key=lambda x: (x[0], x[2], x[1]),
+                             'enemy2_plane.png',
+                             key=lambda x: (x[2], x[2], x[1]),
                              rewrite=True)
+    enemy1 = load_image('enemy_plane.png')
+    enemy2 = load_image('enemy2_plane.png')
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
         pygame.display.update()
+        screen.blit(player, (10, 10))
+        screen.blit(enemy1, (100, 10))
+        screen.blit(enemy2, (100, 150))
+
