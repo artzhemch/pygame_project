@@ -15,10 +15,11 @@ def generate_new_enemy_image(source: str,
     rewrite: перезаписывать ли файл, если такой уже есть
     flip: необходимо ли отразить по горизонтали"""
     fullname = os.path.join(IMAGES_DIRECTORY, source)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    im = Image.open(fullname)
+    try:
+        im = Image.open(fullname)
+    except IOError:
+        print('Cannot load image:', name)
+        raise SystemExit(message)
     pixels = im.load()
     x, y = im.size
     for i in range(x):
@@ -42,10 +43,11 @@ def load_image(name: str, color_key: tuple = -1) -> pygame.Surface:
     """Загрузка изображения из файла. return pygame.Surface с данным изображением
     color_key - если изображение было непрозрачным, задаём цвет фона"""
     fullname = os.path.join(IMAGES_DIRECTORY, name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
+    try:
+        image = pygame.image.load(fullname)
+    except pygame.error as message:
+        print('Cannot load image:', name)
+        raise SystemExit(message)
     if color_key is not None:
         image = image.convert()
         if color_key == -1:
