@@ -7,7 +7,7 @@ from entity_class import Entity
 from plane_class import Plane, Player, TargetingPlane
 from constants import BACKGROUND_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, LIFE_SIZE
 from level_class import levels
-from screens import draw_win, write_notification, draw_interface, draw_lost
+from screens import draw_win, write_notification, draw_interface, draw_lost, draw_starting_screen
 
 
 def create_enemy(all_sprites: pygame.sprite.Group,
@@ -36,7 +36,7 @@ def main():
     player = Player(all_sprites, alliance=1, x=0, y=0)
     running = True
     t = 0
-    game_condition = 'loading_level'
+    game_condition = 'starting_screen'
     level_number = 1
     spawn_rate = -1
     stronger_enemy_propability = 0.3  # Вероятность появления самолёта, стреляющего точно в игрока
@@ -49,6 +49,11 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_TAB:
                     player.hp += 5
+        if game_condition == 'starting_screen':
+            draw_starting_screen(screen)
+            for event in events:
+                if event.type == pygame.KEYDOWN  or event.type == pygame.MOUSEBUTTONDOWN:
+                    game_condition = 'loading_level'
         if game_condition == 'loading_level':
             t = 0
             stronger_enemy_propability, spawn_rate, level_duration = levels[level_number].load()
@@ -68,7 +73,7 @@ def main():
             all_sprites.update(t)
             clock.tick(60)
             t += 1
-            if t < 30:
+            if t < 90:
                 write_notification(screen, f'Уровень {level_number}')
             pygame.display.flip()
             if t >= level_duration:

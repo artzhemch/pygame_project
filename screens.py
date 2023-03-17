@@ -48,6 +48,41 @@ def draw_lost(screen: pygame.display, player: Player):
     pygame.display.flip()
 
 
+def render_multi_line(text: str, x: int, y: int, font: pygame.font.Font, screen: pygame.display):
+    fsize = 30
+    lines = text.splitlines()
+    for i, l in enumerate(lines):
+        screen.blit(font.render(l, 0, (0, 0, 0)), (x, y + fsize * i))
+
+
+def draw_starting_screen(screen: pygame.display):
+    screen.fill(pygame.Color(BACKGROUND_COLOR))
+    font = pygame.font.Font(None, 50)
+
+    head_text_mid = font.render("Добро пожаловать!", True, (0, 255, 0))
+    head_text_x = SCREEN_WIDTH // 2 - head_text_mid.get_width() // 2
+    head_text_y = SCREEN_HEIGHT // 10
+    screen.blit(head_text_mid, (head_text_x, head_text_y))
+    font = pygame.font.Font(None, 26)
+
+    score_text_x = SCREEN_WIDTH // 2 - 300
+    score_text_y = SCREEN_HEIGHT // 4
+    render_multi_line("""Вы управляете красным самолётом, он следует за мышью\n"""
+                      """Ваша задача - выжить и набрать как можно больше очков\n"""
+                      """Каждый сбитый самолёт приносит одно победное очко\n"""
+                      """Самолёты стреляют по вам: синии - прямо перед собой\n"""
+                      """Чёрные - в положение вашего самолёта, уклоняйтесь!\n"""
+                      """Каждый сбитый самолёт приносит одно победное очко\n"""
+                      """Уровни переключаются автоматически, каждый сложнее предыдущего\n"""
+                      """Если испытываете сложности с прохождением - нажмите TAB во время игры\n"""
+                      """\nА теперь нажмите любую клавишу чтобы начать!""",
+                      screen=screen,
+                      font=font,
+                      x=score_text_x,
+                      y=score_text_y)
+    pygame.display.flip()
+
+
 def draw_interface(life: int, life_image: pygame.Surface, screen: pygame.display):
     pygame.draw.rect(screen, (255, 255, 255, 120), (0, 0, SCREEN_WIDTH, LIFE_SIZE))
     for i in range(life):
