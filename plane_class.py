@@ -1,6 +1,7 @@
 from entity_class import Entity
 from image_processing import load_image
-from constants import DEFAULT_ENEMY_SPEED, DEFAULT_HP, PLAYER_HP
+from constants import DEFAULT_ENEMY_SPEED, DEFAULT_HP, \
+    PLAYER_HP, PROJ_SPEED, DEFAULT_RATE_OF_FIRE
 from projectile_class import Projectile
 
 
@@ -17,24 +18,41 @@ class Plane(Entity):
                  hp: int = DEFAULT_HP,
                  collision_damage: int = 1,
                  v_x: int = DEFAULT_ENEMY_SPEED[0],
-                 v_y: int = DEFAULT_ENEMY_SPEED[1]):
+                 v_y: int = DEFAULT_ENEMY_SPEED[1],
+                 bullet_speed: tuple[int, int] = (-PROJ_SPEED, 0),
+                 rate_of_fire: int = RATE_OF_FIRE):
         """alliance: какой команде принадлежит объект
         x, y: координаты исходной точки
         v_x, v_y: скорости
         hp: кол-во жизней самолёта,
-        collision_damage: урон от столкновения"""
+        collision_damage: урон от столкновения
+        bullet_speed: скорость полёта снаряда"""
         if not self.__class__.projectile_image:
             self.__class__.projectile_image = load_image(self.__class__.projectile_name)
         super().__init__(*group, alliance=alliance,
                          x=x, y=y, v_x=v_x,
                          v_y=v_y, hp=hp, collision_damage=collision_damage)
+        self.bullet_speed = bullet_speed
         self.fire()
 
     def fire(self):
-        Projectile(Entity.all_sprites, alliance=self.alliance, x=self.rect.x, y=self.rect.y)
+        """"""
+        x, y = self.rect.size
+        try:
+            proj_w, proj_h = Projectile.image.size
+        except AttributeError:
+            proj_w, proj_h = 24, 24
+        proj_rect = self.rect.move(-30, y // 2 - proj_h // 2)
+        Projectile(Entity.all_sprites,
+                   alliance=self.alliance,
+                   x=proj_rect.x,
+                   y=proj_rect.y,
+                   v_x=self.bullet_speed[0],
+                   v_y=self.bullet_speed[1])
 
 
 class Player(Plane):
+    """Класс игрока"""
     image_name = 'player_plane.png'
     image = None
 
@@ -45,7 +63,9 @@ class Player(Plane):
                  hp: int = PLAYER_HP,
                  collision_damage: int = 999,
                  v_x: int = 0,
-                 v_y: int = 0):
+                 v_y: int = 0,
+                 bullet_speed: tuple[int, int] = (PROJ_SPEED, 0)):
         super().__init__(*group, alliance=alliance,
                          x=x, y=y, v_x=v_x,
-                         v_y=v_y, hp=hp, collision_damage=collision_damage)
+                         v_y=v_y, hp=hp, collision_damage=collision_damage,
+                         bullet_speed=bullet_speed)

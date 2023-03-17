@@ -48,7 +48,6 @@ class Entity(pygame.sprite.Sprite):
             if len(collides) > 0:
                 for i in collides:
                     self.get_hit(i)
-                #self.rect = self.rect.move(10, 10)
 
     def get_hit(self, other):
         "Столкновение с другим объектом"
@@ -60,7 +59,6 @@ class Entity(pygame.sprite.Sprite):
 
     def receive_damage(self, damage: int):
         self.hp -= damage
-        print(self.hp)
         if self.hp <= 0:
             self.get_destroyed()
 
