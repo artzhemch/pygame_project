@@ -24,7 +24,7 @@ def generate_new_enemy_image(source: str,
     x, y = im.size
     for i in range(x):
         for j in range(y):
-            r, g, b = pixels[i, j]
+            r, g, b = pixels[i, j][:3]
             if abs(sum(pixels[i, j]) - sum(pixels[0, 0])) > 10:
                 if not key:
                     pixels[i, j] = b, g, r
