@@ -16,8 +16,9 @@ def main():
 
     Plane(all_sprites, x=100, y=400)
     Plane(all_sprites, alliance=-1, x=100, y=100, v_x=0, v_y=5)
-    player = Player(all_sprites, x=0, y=0)
+    player = Player(all_sprites, alliance=1, x=0, y=0)
     running = True
+    t = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -25,11 +26,14 @@ def main():
             if event.type == pygame.MOUSEMOTION:
                 x, y = event.pos
                 player.rect.topleft = x - 50, y - 50
+        if t % 10 == 0:
+            Plane(all_sprites, alliance=-1, x=700, y=100)
         screen.fill(pygame.Color(BACKGROUND_COLOR))
         all_sprites.draw(screen)
         all_sprites.update()
         pygame.display.flip()
         clock.tick(60)
+        t += 1
 
     pygame.quit()
 

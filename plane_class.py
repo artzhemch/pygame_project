@@ -15,7 +15,7 @@ class Plane(Entity):
                  x: int,
                  y: int,
                  hp: int = DEFAULT_HP,
-                 collision_damage: int = 0,
+                 collision_damage: int = 1,
                  v_x: int = DEFAULT_ENEMY_SPEED[0],
                  v_y: int = DEFAULT_ENEMY_SPEED[1]):
         """alliance: какой команде принадлежит объект

@@ -60,6 +60,7 @@ class Entity(pygame.sprite.Sprite):
 
     def receive_damage(self, damage: int):
         self.hp -= damage
+        print(self.hp)
         if self.hp <= 0:
             self.get_destroyed()
 
