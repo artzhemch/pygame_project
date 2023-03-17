@@ -3,6 +3,7 @@ from image_processing import load_image
 import random
 from collections import defaultdict
 
+
 class Entity(pygame.sprite.Sprite):
     """Класс для всех сущностей"""
     image = None  # Изображение для всех экземпляров класса
@@ -18,12 +19,14 @@ class Entity(pygame.sprite.Sprite):
                  v_x: int = 0,
                  v_y: int = 0,
                  hp: int = -1,
+                 creation_time: int = 0,
                  collision_damage: int = 0):
         """alliance: какой команде принадлежит объект,
         x, y: координаты исходной точки,
         v_x, v_y: скорости,
         hp: сколько урона может выдержать,
-        collision_dmg: урон от столкновения"""
+        collision_dmg: урон от столкновения
+        creation_time: время создания (в тиках)"""
         super().__init__(*group)
         if not self.__class__.image:
             self.__class__.image = load_image(self.__class__.image_name)
@@ -38,6 +41,7 @@ class Entity(pygame.sprite.Sprite):
         self.alliance = alliance
         self.collision_damage = collision_damage
         self.hp = hp
+        self.creation_time = creation_time
 
     def update(self, t: int):
         self.rect = self.rect.move(self.v_x, self.v_y)
@@ -52,7 +56,7 @@ class Entity(pygame.sprite.Sprite):
             self.recycle()
 
     def get_hit(self, other):
-        "Столкновение с другим объектом"
+        """Столкновение с другим объектом"""
         if self is other:
             return
         self.rect = self.rect.move(1, 0)
@@ -68,11 +72,10 @@ class Entity(pygame.sprite.Sprite):
         """Уничтожение объекта (игроком)"""
         self.recycle()
 
-    def get_coordinates(self) -> pygame.Rect:
+    def get_coordinates(self) -> tuple[int, int]:
         return self.rect.x, self.rect.y
 
     def recycle(self):
         """Удаление объекта"""
         Entity.sprite_groups[self.alliance].remove(self)
         Entity.all_sprites.remove(self)
-

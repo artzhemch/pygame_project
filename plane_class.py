@@ -20,7 +20,8 @@ class Plane(Entity):
                  v_x: int = DEFAULT_ENEMY_SPEED[0],
                  v_y: int = DEFAULT_ENEMY_SPEED[1],
                  bullet_speed: tuple[int, int] = (-PROJ_SPEED, 0),
-                 fire_rate: int = DEFAULT_RATE_OF_FIRE):
+                 fire_rate: int = DEFAULT_RATE_OF_FIRE,
+                 creation_time: int = 0):
         """alliance: какой команде принадлежит объект
         x, y: координаты исходной точки
         v_x, v_y: скорости
@@ -32,7 +33,8 @@ class Plane(Entity):
             self.__class__.projectile_image = load_image(self.__class__.projectile_name)
         super().__init__(*group, alliance=alliance,
                          x=x, y=y, v_x=v_x,
-                         v_y=v_y, hp=hp, collision_damage=collision_damage)
+                         v_y=v_y, hp=hp, collision_damage=collision_damage,
+                         creation_time=creation_time)
         self.bullet_speed = bullet_speed
         self.fire_rate = fire_rate
         # self.fire()
@@ -54,7 +56,7 @@ class Plane(Entity):
 
     def update(self, t):
         super().update(t)
-        if t % self.fire_rate == 0:
+        if (t - self.creation_time) % self.fire_rate == 0:
             self.fire()
 
 
@@ -72,7 +74,8 @@ class Player(Plane):
                  v_x: int = 0,
                  v_y: int = 0,
                  bullet_speed: tuple[int, int] = (PROJ_SPEED, 0),
-                 fire_rate: int = HERO_RATE_OF_FIRE):
+                 fire_rate: int = HERO_RATE_OF_FIRE,
+                 creation_time: int = 0):
         super().__init__(*group,
                          alliance=alliance,
                          x=x,
@@ -82,7 +85,8 @@ class Player(Plane):
                          hp=hp,
                          collision_damage=collision_damage,
                          bullet_speed=bullet_speed,
-                         fire_rate=fire_rate)
+                         fire_rate=fire_rate,
+                         creation_time=creation_time)
 
 
 class TargetingPlane(Plane):
@@ -101,6 +105,7 @@ class TargetingPlane(Plane):
                  v_y: int = DEFAULT_ENEMY_SPEED[1],
                  bullet_speed: tuple[int, int] = (PROJ_SPEED, 0),
                  fire_rate: int = DEFAULT_RATE_OF_FIRE * 4,
+                 creation_time: int = 0,
                  target: Entity):
         """bullet_speed: модуль скорости снаряда
         target: цель, в которую будет осуществляться стрельба"""
@@ -108,7 +113,8 @@ class TargetingPlane(Plane):
         super().__init__(*group, alliance=alliance,
                          x=x, y=y, v_x=v_x,
                          v_y=v_y, hp=hp, collision_damage=collision_damage,
-                         fire_rate=fire_rate, bullet_speed=bullet_speed)
+                         fire_rate=fire_rate, bullet_speed=bullet_speed,
+                         creation_time=creation_time)
 
     def fire(self):
         x, y = self.rect.size

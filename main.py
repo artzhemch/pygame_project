@@ -8,20 +8,19 @@ from plane_class import Plane, Player, TargetingPlane
 from constants import BACKGROUND_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, LIFE_SIZE
 
 
-
 def draw_interface(life: int, life_image: pygame.Surface, screen: pygame.display, score: int):
     pygame.draw.rect(screen, (255, 255, 255, 120), (0, 0, SCREEN_WIDTH, LIFE_SIZE))
     for i in range(life):
         screen.blit(life_image, (i * LIFE_SIZE, 0))
     myfont = pygame.font.SysFont("monospace", 20)
-    label = myfont.render(f"Score: {score}", 1, (0, 0, 0))
+    label = myfont.render(f"Score: {score}", True, (0, 0, 0))
     screen.blit(label, (SCREEN_WIDTH - label.get_size()[0] - 10, 10))
 
 
-def create_enemy(all_sprites: pygame.sprite.Group, player: pygame.sprite) -> Plane:
+def create_enemy(all_sprites: pygame.sprite.Group, player: pygame.sprite, time: int) -> Plane:
     """Создаёт противника в случайном месте на экране. Противник атакует player"""
     y = random.randrange(50, SCREEN_HEIGHT - 50)
-    return TargetingPlane(all_sprites, alliance=-1, x=SCREEN_WIDTH, y=y, target=player)
+    return TargetingPlane(all_sprites, alliance=-1, x=SCREEN_WIDTH, y=y, creation_time=time, target=player)
 
 
 def main():
@@ -45,7 +44,7 @@ def main():
                 dx, dy = player.image.get_size()
                 player.rect.topleft = x - dx // 2, max(LIFE_SIZE, y - dy // 2)
         if t % 10 == 0:
-            x = create_enemy(all_sprites, player)
+            x = create_enemy(all_sprites, player, t)
             x.fire()
         screen.fill(pygame.Color(BACKGROUND_COLOR))
         all_sprites.draw(screen)
