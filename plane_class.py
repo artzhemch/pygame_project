@@ -5,6 +5,7 @@ from constants import DEFAULT_ENEMY_SPEED, DEFAULT_HP, \
 from projectile_class import Projectile
 from math import cos, sin
 
+
 class Plane(Entity):
     """Класс самолёта. Передвигается и стреляет"""
     image_name = 'enemy_plane.png'
@@ -94,6 +95,7 @@ class TargetingPlane(Plane):
     image_name = 'enemy2_plane.png'
     projectile_name = 'bullet.png'
     projectile_image = None
+    image = None
 
     def __init__(self, *group,
                  alliance: int = 0,
@@ -123,7 +125,7 @@ class TargetingPlane(Plane):
         except AttributeError:
             proj_w, proj_h = 24, 24
         proj_rect = self.rect.move(-30, y // 2 - proj_h // 2)
-        bullet_speed_abs = int(sum(x ** 2 for x in self.bullet_speed) ** 0.5) # Модуль скорости снаряда
+        bullet_speed_abs = int(sum(x ** 2 for x in self.bullet_speed) ** 0.5)  # Модуль скорости снаряда
         target_x, target_y = self.target.get_coordinates()
         plane_x, plane_y = self.get_coordinates()
         dx = target_x - plane_x

@@ -17,14 +17,23 @@ def draw_interface(life: int, life_image: pygame.Surface, screen: pygame.display
     screen.blit(label, (SCREEN_WIDTH - label.get_size()[0] - 10, 10))
 
 
-def create_enemy(all_sprites: pygame.sprite.Group, player: pygame.sprite, time: int) -> Plane:
-    """Создаёт противника в случайном месте на экране. Противник атакует player"""
-    y = random.randrange(50, SCREEN_HEIGHT - 50)
-    return TargetingPlane(all_sprites, alliance=-1, x=SCREEN_WIDTH, y=y, creation_time=time, target=player)
+def create_enemy(all_sprites: pygame.sprite.Group,
+                 player: pygame.sprite,
+                 time: int,
+                 black_propability: float) -> Plane:
+    """Создаёт противника в случайном месте на экране. Противник атакует player
+    time: время
+    black_propability: вероятность появления чёрного самолёта, а не синего"""
+    y = random.randrange(LIFE_SIZE, SCREEN_HEIGHT - 50)
+    roll = random.random()
+    if roll < black_propability:
+        return TargetingPlane(all_sprites, alliance=-1, x=SCREEN_WIDTH, y=y, creation_time=time, target=player)
+    return Plane(all_sprites, alliance=-1, x=SCREEN_WIDTH, y=y, creation_time=time)
 
 
 def main():
     pygame.init()
+    stronger_enemy_propability = 0.3  # Вероятность появления самолёта, стреляющего точно в игрока
     size = SCREEN_WIDTH, SCREEN_HEIGHT
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode(size)
@@ -44,8 +53,8 @@ def main():
                 dx, dy = player.image.get_size()
                 player.rect.topleft = x - dx // 2, max(LIFE_SIZE, y - dy // 2)
         if t % 10 == 0:
-            x = create_enemy(all_sprites, player, t)
-            x.fire()
+            x = create_enemy(all_sprites, player, t, stronger_enemy_propability)
+            print(x.__class__)
         screen.fill(pygame.Color(BACKGROUND_COLOR))
         all_sprites.draw(screen)
         draw_interface(player.hp, life_image, screen, 0)

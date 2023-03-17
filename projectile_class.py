@@ -1,6 +1,7 @@
 from entity_class import Entity
 from image_processing import load_image
 
+
 class Projectile(Entity):
     """Класс снаряда"""
     image_name = 'bullet.png'
@@ -15,4 +16,3 @@ class Projectile(Entity):
                  v_y: int = 0,
                  collision_damage: int = 1):
         super().__init__(*group, alliance=alliance, collision_damage=collision_damage, x=x, y=y, v_x=v_x, v_y=v_y)
-
