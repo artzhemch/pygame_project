@@ -6,6 +6,7 @@ from image_processing import load_image
 from entity_class import Entity
 from plane_class import Plane, Player, TargetingPlane
 from constants import BACKGROUND_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, LIFE_SIZE
+from level_class import level1, level2
 
 
 def draw_interface(life: int, life_image: pygame.Surface, screen: pygame.display, score: int):
@@ -33,7 +34,6 @@ def create_enemy(all_sprites: pygame.sprite.Group,
 
 def main():
     pygame.init()
-    stronger_enemy_propability = 0.3  # Вероятность появления самолёта, стреляющего точно в игрока
     size = SCREEN_WIDTH, SCREEN_HEIGHT
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode(size)
@@ -44,24 +44,41 @@ def main():
     player = Player(all_sprites, alliance=1, x=0, y=0)
     running = True
     t = 0
+    game_condition = 'loading_level'
+    level_number = 1
+    levels = {1: level1, 2: level2}
+    spawn_rate = -1
+    stronger_enemy_propability = 0.3  # Вероятность появления самолёта, стреляющего точно в игрока
+    level_duration = 60
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.MOUSEMOTION and pygame.mouse.get_focused():
-                x, y = event.pos
-                dx, dy = player.image.get_size()
-                player.rect.topleft = x - dx // 2, max(LIFE_SIZE, y - dy // 2)
-        if t % 10 == 0:
-            x = create_enemy(all_sprites, player, t, stronger_enemy_propability)
-            print(x.__class__)
-        screen.fill(pygame.Color(BACKGROUND_COLOR))
-        all_sprites.draw(screen)
-        draw_interface(player.hp, life_image, screen, 0)
-        all_sprites.update(t)
-        pygame.display.flip()
-        clock.tick(60)
-        t += 1
+        if game_condition == 'loading_level':
+            t = 0
+            stronger_enemy_propability, spawn_rate, level_duration = levels[level_number].load()
+            game_condition = 'level_active'
+        if game_condition == 'level_active':
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.MOUSEMOTION and pygame.mouse.get_focused():
+                    x, y = event.pos
+                    dx, dy = player.image.get_size()
+                    player.rect.topleft = x - dx // 2, max(LIFE_SIZE, y - dy // 2)
+            if t % spawn_rate == 0:
+                create_enemy(all_sprites, player, t, stronger_enemy_propability)
+            screen.fill(pygame.Color(BACKGROUND_COLOR))
+            all_sprites.draw(screen)
+            draw_interface(player.hp, life_image, screen, 0)
+            all_sprites.update(t)
+            pygame.display.flip()
+            clock.tick(60)
+            t += 1
+            if t >= level_duration:
+                game_condition = 'loading_level'
+                for i in all_sprites:
+                    pass
+
+
 
     pygame.quit()
 

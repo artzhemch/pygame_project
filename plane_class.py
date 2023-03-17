@@ -89,6 +89,20 @@ class Player(Plane):
                          fire_rate=fire_rate,
                          creation_time=creation_time)
 
+    def fire(self):
+        """Выстрел перед собой"""
+        x, y = self.rect.size
+        try:
+            proj_w, proj_h = Projectile.image.size
+        except AttributeError:
+            proj_w, proj_h = 24, 24
+        proj_rect = self.rect.move(100, y // 2 - proj_h // 2)
+        Projectile(Entity.all_sprites,
+                   alliance=self.alliance,
+                   x=proj_rect.x,
+                   y=proj_rect.y,
+                   v_x=self.bullet_speed[0],
+                   v_y=self.bullet_speed[1])
 
 class TargetingPlane(Plane):
     """Самолёт, стреляющий в конкретный объект по диагонали"""
