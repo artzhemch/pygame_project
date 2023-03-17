@@ -52,7 +52,7 @@ def render_multi_line(text: str, x: int, y: int, font: pygame.font.Font, screen:
     fsize = 30
     lines = text.splitlines()
     for i, l in enumerate(lines):
-        screen.blit(font.render(l, 0, (0, 0, 0)), (x, y + fsize * i))
+        screen.blit(font.render(l, True, (0, 0, 0)), (x, y + fsize * i))
 
 
 def draw_starting_screen(screen: pygame.display):

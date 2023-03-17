@@ -52,7 +52,7 @@ def main():
         if game_condition == 'starting_screen':
             draw_starting_screen(screen)
             for event in events:
-                if event.type == pygame.KEYDOWN  or event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                     game_condition = 'loading_level'
         if game_condition == 'loading_level':
             t = 0
