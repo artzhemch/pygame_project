@@ -81,4 +81,3 @@ if __name__ == '__main__':
         screen.blit(player, (10, 10))
         screen.blit(enemy1, (100, 10))
         screen.blit(enemy2, (100, 150))
-
