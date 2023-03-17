@@ -36,9 +36,10 @@ def main():
             x.fire()
         screen.fill(pygame.Color(BACKGROUND_COLOR))
         all_sprites.draw(screen)
-        all_sprites.update()
+        all_sprites.update(t)
         pygame.display.flip()
         clock.tick(60)
+        print(len(all_sprites))
         t += 1
 
     pygame.quit()

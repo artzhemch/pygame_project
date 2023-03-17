@@ -39,7 +39,7 @@ class Entity(pygame.sprite.Sprite):
         self.collision_damage = collision_damage
         self.hp = hp
 
-    def update(self):
+    def update(self, t: int):
         self.rect = self.rect.move(self.v_x, self.v_y)
         for ally, sprite_group in Entity.sprite_groups.items():
             if ally == self.alliance:
@@ -48,6 +48,8 @@ class Entity(pygame.sprite.Sprite):
             if len(collides) > 0:
                 for i in collides:
                     self.get_hit(i)
+        if self.rect.x < -100:
+            self.recycle()
 
     def get_hit(self, other):
         "Столкновение с другим объектом"
@@ -63,9 +65,11 @@ class Entity(pygame.sprite.Sprite):
             self.get_destroyed()
 
     def get_destroyed(self):
-        """Уничтожение объекта"""
+        """Уничтожение объекта (игроком)"""
+        self.recycle()
+
+    def recycle(self):
+        """Удаление объекта"""
         Entity.sprite_groups[self.alliance].remove(self)
         Entity.all_sprites.remove(self)
-
-
 
