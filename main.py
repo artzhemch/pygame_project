@@ -6,16 +6,8 @@ from image_processing import load_image
 from entity_class import Entity
 from plane_class import Plane, Player, TargetingPlane
 from constants import BACKGROUND_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, LIFE_SIZE
-from level_class import level1, level2
-
-
-def draw_interface(life: int, life_image: pygame.Surface, screen: pygame.display, score: int):
-    pygame.draw.rect(screen, (255, 255, 255, 120), (0, 0, SCREEN_WIDTH, LIFE_SIZE))
-    for i in range(life):
-        screen.blit(life_image, (i * LIFE_SIZE, 0))
-    myfont = pygame.font.SysFont("monospace", 20)
-    label = myfont.render(f"Score: {score}", True, (0, 0, 0))
-    screen.blit(label, (SCREEN_WIDTH - label.get_size()[0] - 10, 10))
+from level_class import levels
+from screens import draw_win, write_notification, draw_interface, draw_lost
 
 
 def create_enemy(all_sprites: pygame.sprite.Group,
@@ -46,20 +38,24 @@ def main():
     t = 0
     game_condition = 'loading_level'
     level_number = 1
-    levels = {1: level1, 2: level2}
     spawn_rate = -1
     stronger_enemy_propability = 0.3  # Вероятность появления самолёта, стреляющего точно в игрока
     level_duration = 60
     while running:
+        events = list(pygame.event.get())
+        for event in events:
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_TAB:
+                    player.hp += 5
         if game_condition == 'loading_level':
             t = 0
             stronger_enemy_propability, spawn_rate, level_duration = levels[level_number].load()
             game_condition = 'level_active'
-        if game_condition == 'level_active':
+        elif game_condition == 'level_active':
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+            for event in events:
                 if event.type == pygame.MOUSEMOTION and pygame.mouse.get_focused():
                     x, y = event.pos
                     dx, dy = player.image.get_size()
@@ -68,17 +64,24 @@ def main():
                 create_enemy(all_sprites, player, t, stronger_enemy_propability)
             screen.fill(pygame.Color(BACKGROUND_COLOR))
             all_sprites.draw(screen)
-            draw_interface(player.hp, life_image, screen, 0)
+            draw_interface(player.hp, life_image, screen)
             all_sprites.update(t)
-            pygame.display.flip()
             clock.tick(60)
             t += 1
+            if t < 30:
+                write_notification(screen, f'Уровень {level_number}')
+            pygame.display.flip()
             if t >= level_duration:
                 game_condition = 'loading_level'
-                for i in all_sprites:
-                    pass
-
-
+                level_number += 1
+                if level_number > max(levels.keys()):
+                    game_condition = 'win'
+            if player.hp <= 0:
+                game_condition = 'lost'
+        elif game_condition == 'win':
+            draw_win(screen, player)
+        elif game_condition == 'lost':
+            draw_lost(screen, player)
 
     pygame.quit()
 

@@ -6,6 +6,7 @@ from collections import defaultdict
 
 class Entity(pygame.sprite.Sprite):
     """Класс для всех сущностей"""
+    score = 0
     image = None  # Изображение для всех экземпляров класса
     image_name = 'player_plane.png'  # Имя изображения
     all_sprites = None  # Все спрайты
@@ -52,7 +53,7 @@ class Entity(pygame.sprite.Sprite):
             if len(collides) > 0:
                 for i in collides:
                     self.get_hit(i)
-        if self.rect.x < -100:
+        if self.rect.x < -100 or self.rect.x > 1000:
             self.recycle()
 
     def get_hit(self, other):

@@ -55,6 +55,9 @@ class Plane(Entity):
                    v_x=self.bullet_speed[0],
                    v_y=self.bullet_speed[1])
 
+    def get_destroyed(self):
+        Entity.score += 1
+        super().get_destroyed()
     def update(self, t):
         super().update(t)
         if (t - self.creation_time) % self.fire_rate == 0:

@@ -12,5 +12,7 @@ class Level:
         return self.black_prob, self.spawn_time, self.duration
 
 
-level1 = Level(0, 10, 60)
-level2 = Level(0.3, 8, 70)
+level1 = Level(0, 10, 600)
+level2 = Level(0.3, 8, 700)
+level3 = Level(0.5, 8, 700)
+levels = {1: level1, 2: level2, 3: level3}
