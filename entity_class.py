@@ -68,6 +68,9 @@ class Entity(pygame.sprite.Sprite):
         """Уничтожение объекта (игроком)"""
         self.recycle()
 
+    def get_coordinates(self) -> pygame.Rect:
+        return self.rect.x, self.rect.y
+
     def recycle(self):
         """Удаление объекта"""
         Entity.sprite_groups[self.alliance].remove(self)
