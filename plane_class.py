@@ -3,7 +3,6 @@ from image_processing import load_image
 from constants import DEFAULT_ENEMY_SPEED, DEFAULT_HP, \
     PLAYER_HP, PROJ_SPEED, DEFAULT_RATE_OF_FIRE, HERO_RATE_OF_FIRE
 from projectile_class import Projectile
-from math import cos, sin
 
 
 class Plane(Entity):
