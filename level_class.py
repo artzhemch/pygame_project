@@ -1,3 +1,6 @@
+import os
+
+
 class Level:
     """Класс уровня"""
     def __init__(self, black_prob: float, spawn_time: int, duration: int):
@@ -11,8 +14,17 @@ class Level:
     def load(self) -> tuple[float, int, int]:
         return self.black_prob, self.spawn_time, self.duration
 
+    def __repr__(self):
+        return f'Level({self.black_prob}, {self.spawn_time}, {self.duration})'
 
-level1 = Level(0, 10, 600)
-level2 = Level(0.3, 8, 700)
-level3 = Level(0.5, 8, 700)
-levels = {1: level1, 2: level2, 3: level3}
+
+def read_levels_from_file(filename) -> dict:
+    with open(os.path.join('levels', filename)) as file:
+        lines = list(map(lambda x: x.strip().split(', '), file.readlines()))
+    levels = []
+    for prob, spawn_time, duration in lines:
+        levels.append(Level(float(prob), int(spawn_time), int(duration)))
+    return dict(enumerate(levels, start=1))
+
+
+levels = read_levels_from_file('levels.txt')
